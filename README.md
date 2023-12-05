@@ -126,5 +126,5 @@ $
 
 ## Contributors
 * The following people contributed to this repository.
-	- Samuella Manye Aglago
-  - Cobby Sefah Solomon
+- Samuella Manye Aglago <>
+- Cobby Sefah Solomon <solomonsefah13@gmail.com>
