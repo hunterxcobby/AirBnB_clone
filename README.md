@@ -126,5 +126,5 @@ $
 
 ## Contributors
 * The following people contributed to this repository.
-	- AMI MANYE
-    - COBBY SEFAH SOLOMON
+	- Samuella Manye Aglago
+  - Cobby Sefah Solomon
