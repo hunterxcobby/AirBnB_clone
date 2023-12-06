@@ -1,51 +1,48 @@
 #!/usr/bin/python3
 
-from uuid import uuid4
+import uuid
 from datetime import datetime
 
 
 class BaseModel:
     """BaseModel class for creating and managing instances.
     """
+    TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
+
     def __init__(self, *args, **kwargs):
         """Initialize a new instance of BaseModel.
-
         Args:
-            - *args: arguments
+            - *args: will not be used
             - **kwargs: a dictionary of key-values arguments
         """
         if kwargs:
             for key, value in kwargs.items():
-                time_format = "%Y-%m-%dT%H:%M:%S.%f"
                 if key != '__class__':
                     if key in ["created_at", "updated_at"]:
-                        value = datetime.strptime(value, time_format)
-                        setattr(self, key, value)
+                        value = datetime.strptime(value, self.TIME_FORMAT)
+                    setattr(self, key, value)
         else:
-            self.id = str(uuid4())
+            self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the instance."""
         class_name = self.__class__.__name__
         return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
 
-    def save(self):
+    def save(self) -> None:
         """Update the updated_at attribute and save the instance."""
         self.updated_at = datetime.now()
 
-    def to_dict(self):
-        """
-        Returns a dictionary containing all keys/values of __dict__ of the instance.
-        A key __class__ must be added to this dictionary with the class name of the object.
-        created_at and updated_at must be converted to string object in ISO format.
-        """
-        result = self.__dict__.copy()
+    def to_dict(self) -> dict:
+        """Return a dictionary of instance attributes."""
+        excluded = ['name', 'my_number']
+        result = {k: v for k, v in self.__dict__.items() if k not in excluded}
         result['__class__'] = self.__class__.__name__
 
-        for key, value in result.items():
-            if isinstance(value, datetime):
-                result[key] = value.isoformat()
+        for k, v in result.items():
+            if isinstance(v, datetime):
+                result[k] = v.isoformat()
 
         return result
