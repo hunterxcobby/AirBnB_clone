@@ -1,7 +1,7 @@
 # 0x00. AirBnB clone - The console
 
 <p align="center">
-  <img src='./technicals/HBNB.png' border='0' alt='Air-Bn-B-Project'/>
+  <img src='./utils/HBNB.png' border='0' alt='Air-Bn-B-Project'/>
 </p>
 
 
@@ -126,5 +126,5 @@ $
 
 ## Contributors
 * The following people contributed to this repository.
-	- AMI MANYE
-    - COBBY SEFAH SOLOMON
+- Samuella Manye Aglago <>
+- Cobby Sefah Solomon <solomonsefah13@gmail.com>
