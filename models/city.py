@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+"""City Module:
+Inherits from Superclass BaseModel
+"""
+
 from models.base_model import BaseModel
 
 
