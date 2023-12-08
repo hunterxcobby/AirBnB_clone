@@ -9,7 +9,7 @@ into an instances.
 import json
 from os import path
 from models.base_model import BaseModel
-
+from models.user import User
 
 class FileStorage:
 
@@ -19,6 +19,11 @@ class FileStorage:
     __objects: dictionary - empty but will store all objects by <class name>.id 
     """
 
+    CLASSES = {
+            'BaseModel': BaseModel,
+            'User': User,
+            # ... (other classes)
+        }
 
     __file_path = "file.json"  # path to the JSON file
     __objects = {}  # dictionary to store all objects by <class name>.id
