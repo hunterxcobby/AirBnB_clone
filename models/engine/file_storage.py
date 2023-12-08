@@ -10,6 +10,12 @@ import json
 from os import path
 from models.base_model import BaseModel
 from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+
 
 class FileStorage:
 
@@ -20,10 +26,14 @@ class FileStorage:
     """
 
     CLASSES = {
-            'BaseModel': BaseModel,
-            'User': User,
-            # ... (other classes)
-        }
+    'BaseModel': BaseModel,
+    'User': User,
+    'State': State,
+    'City': City,
+    'Amenity': Amenity,
+    'Place': Place,
+    'Review': Review
+    }
 
     __file_path = "file.json"  # path to the JSON file
     __objects = {}  # dictionary to store all objects by <class name>.id
