@@ -7,10 +7,18 @@ import cmd
 from models.base_model import BaseModel
 from models import storage
 import re
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
+
+    CLASSES = {
+            'BaseModel': BaseModel,
+            'User': User,  # Add User class here
+            # ... (other classes)
+        }
+
 
     def emptyline(self):
         """Do nothing on an empty line."""
@@ -40,7 +48,8 @@ class HBNBCommand(cmd.Cmd):
             return
 
         try:
-            object = BaseModel()
+            class_name = args[0]
+            object = self.CLASSES[class_name]()
             object.save()
             print(object.id)
         except ImportError:
@@ -52,7 +61,7 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if not args:
             print("** class name missing **")
-        elif args[0] not in ["BaseModel"]:
+        elif args[0] not in self.CLASSES:
             print("** class doesn't exist **")
         elif len(args) < 2:
             print("** instance id missing **")
@@ -69,7 +78,7 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if not args:
             print("** class name missing **")
-        elif args[0] not in ["BaseModel"]:
+        elif args[0] not in self.CLASSES:
             print("** class doesn't exist **")
         elif len(args) < 2:
             print("** instance id missing **")
@@ -90,7 +99,7 @@ class HBNBCommand(cmd.Cmd):
 
         if not args:
             print([str(obj) for obj in objects.values()])
-        elif args[0] not in ["BaseModel"]:
+        elif args[0] not in self.CLASSES:
             print("** class doesn't exist **")
         else:
             print([
@@ -120,7 +129,7 @@ class HBNBCommand(cmd.Cmd):
         attribute = match.group(3)
         value = match.group(4)
 
-        if classname not in ["BaseModel"]:
+        if classname not in self.CLASSES:
             print("** class doesn't exist **")
             return
         elif uid is None:
