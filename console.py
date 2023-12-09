@@ -13,10 +13,13 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from datetime import datetime
 
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
+
+    # TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
     CLASSES = {
         'BaseModel': BaseModel,
@@ -116,71 +119,53 @@ class HBNBCommand(cmd.Cmd):
             ])
 
     def do_update(self, line):
-        """Updates an instance based on the class name and id by adding'
-        or updating attribute
-        (save the change into the JSON file)."""
+        """Updates an instance based on the class name and id by adding
+        or updating attribute (save the change into the JSON file).
+        """
         args = line.split()
 
         if not args:
             print("** class name missing **")
             return
 
-        rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
+        rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s(".*"|[^"]\S*)?)?)?)?'
         match = re.search(rex, line)
 
         if not match:
-            print("** class name missing **")
+            print("** invalid command format **")
             return
 
-        classname = match.group(1)
-        uid = match.group(2)
-        attribute = match.group(3)
-        value = match.group(4)
+        classname, uid, attribute, value = match.groups()
 
         if classname not in self.CLASSES:
             print("** class doesn't exist **")
             return
-        elif uid is None:
+        elif not uid:
             print("** instance id missing **")
             return
-        else:
-            key = "{}.{}".format(classname, uid)
-            if key not in storage.all():
-                print("** no instance found **")
-                return
-            elif not attribute:
-                print("** attribute name missing **")
-                return
-            elif not value:
-                print("** value missing **")
-                return
-            else:
-                obj = storage.all()[key]
-                cast = None
-                if not re.search('^".*"$', value):
-                    if '.' in value:
-                        cast = float
-                    else:
-                        cast = int
-                else:
-                    value = value.replace('"', '')
-                attributes = {k: type(v) for k, v in obj.to_dict().items()}
-                if attribute not in attributes:
-                    # Attribute doesn't exist, create it with the given value
-                    setattr(obj, attribute, value)
-                    storage.save()
-                elif cast:
-                    try:
-                        value = cast(value)
-                    except ValueError:
-                        print(f"Value {value} cannot be casted to type {cast}")
-                        return
-                    setattr(obj, attribute, value)
-                    storage.save()
-                else:
-                    # Update the attribute with the given value
-                    setattr(obj, attribute, value)
-                    storage.save()
+
+        key = f"{classname}.{uid}"
+        if key not in storage.all():
+            print("** no instance found **")
+            return
+        elif not attribute:
+            print("** attribute name missing **")
+            return
+        elif not value:
+            print("** value missing **")
+            return
+
+        obj = storage.all()[key]
+
+        # Store the previous updated_at value
+        # prev_updated_at = obj.updated_at
+
+        # Simplify attribute handling (without explicit checks)
+        setattr(obj, attribute, value)
+
+        # Always update the updated_at attribute
+        # obj.updated_at = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        storage.all()[key].save()
 
 
 if __name__ == '__main__':
