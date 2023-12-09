@@ -37,6 +37,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, line):
         """Exit the console on EOF (Ctrl+D) command."""
+        print()
         return True
 
     def do_quit(self, line):
@@ -49,6 +50,13 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         """Handle unrecognized commands."""
+        parts = line.split('.')
+        if len(parts) == 2 and parts[1] == 'all()':
+            class_name = parts[0]
+            if class_name in self.CLASSES:
+                instances = [str(obj) for key, obj in storage.all().items() if key.startswith(class_name + '.')]
+                print(instances)
+                return
         print(f"Unrecognized command: {line}. Type 'help' for assistance.\n")
 
     def do_create(self, line):
@@ -106,17 +114,19 @@ class HBNBCommand(cmd.Cmd):
         (save the change into the JSON file).
         """
         args = line.split()
-        objects = storage.all()
+        # objects = storage.all()
 
         if not args:
-            print([str(obj) for obj in objects.values()])
+            print([str(obj) for obj in storage.all().values()])
         elif args[0] not in self.CLASSES:
             print("** class doesn't exist **")
         else:
-            print([
-                str(obj) for key, obj in objects.items()
-                if key.startswith(args[0] + '.')
-            ])
+            class_name = args[0]
+            instances = [
+                str(obj) for key, obj in storage.all().items()
+                if key.startswith(class_name + '.')
+            ]
+            print(instances)
 
     def do_update(self, line):
         """Updates an instance based on the class name and id by adding
