@@ -49,15 +49,29 @@ class HBNBCommand(cmd.Cmd):
         print("Quit command to exit the program\n")
 
     def handle_custom_command(self, class_name, action):
-            """Handle custom commands like <class name>.all() or <class name>.count()."""
-            if action == 'all()':
+        """Handle custom commands like <class name>.all() or <class name>.count()."""
+        parts = action.split("(")
+        if len(parts) == 2 and parts[1].endswith(')'):
+            action_name = parts[0]
+            action_arg = parts[1][:-1].strip('\"')  # Remove the closing parenthesis and any surrounding quotes
+
+            if action_name == 'show':
+                key = "{}.{}".format(class_name, action_arg)
+                if key in storage.all():
+                    print(storage.all()[key])
+                else:
+                    print(f"** no instance found **")
+            elif action_name == 'all':
                 instances = [str(obj) for key, obj in storage.all().items() if key.startswith(class_name + '.')]
                 print(instances)
-            elif action == 'count()':
+            elif action_name == 'count':
                 count = sum(1 for key in storage.all() if key.startswith(class_name + '.'))
                 print(count)
             else:
-                print(f"Unrecognized action: {action}. Type 'help' for assistance.\n")
+                print(f"Unrecognized action: {action_name}. Type 'help' for assistance.\n")
+        else:
+            print(f"Unrecognized action: {action}. Type 'help' for assistance.\n")
+
 
     def default(self, line):
         """Handle unrecognized commands."""
