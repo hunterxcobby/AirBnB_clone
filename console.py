@@ -48,16 +48,25 @@ class HBNBCommand(cmd.Cmd):
         """Help message for the quit command."""
         print("Quit command to exit the program\n")
 
+    def handle_custom_command(self, class_name, action):
+            """Handle custom commands like <class name>.all() or <class name>.count()."""
+            if action == 'all()':
+                instances = [str(obj) for key, obj in storage.all().items() if key.startswith(class_name + '.')]
+                print(instances)
+            elif action == 'count()':
+                count = sum(1 for key in storage.all() if key.startswith(class_name + '.'))
+                print(count)
+            else:
+                print(f"Unrecognized action: {action}. Type 'help' for assistance.\n")
+
     def default(self, line):
         """Handle unrecognized commands."""
         parts = line.split('.')
-        if len(parts) == 2 and parts[1] == 'all()':
-            class_name = parts[0]
-            if class_name in self.CLASSES:
-                instances = [str(obj) for key, obj in storage.all().items() if key.startswith(class_name + '.')]
-                print(instances)
-                return
-        print(f"Unrecognized command: {line}. Type 'help' for assistance.\n")
+        if len(parts) == 2:
+            class_name, action = parts
+            self.handle_custom_command(class_name, action)
+        else:
+            print(f"Unrecognized command: {line}. Type 'help' for assistance.\n")
 
     def do_create(self, line):
         """Creates a new instance of BaseModel, saves it (to the JSON file)"""
