@@ -7,7 +7,6 @@ This module is a test file used to test the BaseModel class of our AirBnB_clone 
 
 # python's path
 
-sys.path
 # modules that will be used here
 
 import unittest
@@ -17,7 +16,7 @@ from models.base_model import BaseModel
 
 def is_string(value):
     ''' return true if value is string '''
-    return isintance(value)
+    return isinstance(value, str)
 
 # Test Cases
 
