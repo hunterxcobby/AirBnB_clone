@@ -5,6 +5,7 @@ from models import State
 from datetime import datetime
 import os
 
+
 class TestStateModel(unittest.TestCase):
     def setUp(self):
         self.state_model = State()
@@ -35,6 +36,7 @@ class TestStateModel(unittest.TestCase):
         self.assertIn('created_at', state_dict)
         self.assertIn('updated_at', state_dict)
         self.assertIn('name', state_dict)
+
 
 if __name__ == '__main__':
     unittest.main()
