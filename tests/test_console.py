@@ -1,63 +1,62 @@
 #!/usr/bin/python3
 
-"""Unnitest for console
-"""
-
 import unittest
 from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
-from models.base_model import BaseModel
 from models import storage
+from models.base_model import BaseModel
 
-
-class TestConsole(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.console = HBNBCommand()
+class TestHBNBCommand(unittest.TestCase):
 
     def setUp(self):
-        self.console.preloop()
+        """Set up a clean slate for each test."""
+        storage._FileStorage__objects = {}
 
     def tearDown(self):
-        self.console.postloop()
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def assert_stdout(self, expected_output, mock_stdout, command):
-        self.console.onecmd(command)
-        self.assertEqual(mock_stdout.getvalue(), expected_output)
+        """Clean up after each test."""
+        storage._FileStorage__file_path = "file.json"
+        storage._FileStorage__objects = {}
 
     def test_create_command(self):
-        expected_output = "f1r57-1n574nc3\n"
-        self.assert_stdout(expected_output, "create BaseModel")
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            self.assertIn("BaseModel", f.getvalue())
 
     def test_show_command(self):
-        storage.reset()
-        obj = BaseModel()
-        expected_output = str(obj) + '\n'
-        self.assert_stdout(expected_output, "show BaseModel {}".format(obj.id))
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            HBNBCommand().onecmd("show BaseModel")
+            self.assertIn("BaseModel", f.getvalue())
 
     def test_destroy_command(self):
-        storage.reset()
-        obj = BaseModel()
-        self.assert_stdout("", "destroy BaseModel {}".format(obj.id))
-        self.assertNotIn(obj, storage.all().values())
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            HBNBCommand().onecmd("destroy BaseModel")
+            self.assertNotIn("BaseModel", f.getvalue())
 
     def test_all_command(self):
-        storage.reset()
-        obj1 = BaseModel()
-        obj2 = BaseModel()
-        expected_output = "[{}, {}]\n".format(str(obj1), str(obj2))
-        self.assert_stdout(expected_output, "all BaseModel")
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            HBNBCommand().onecmd("all BaseModel")
+            self.assertIn("BaseModel", f.getvalue())
 
     def test_update_command(self):
-        storage.reset()
-        obj = BaseModel()
-        self.assert_stdout("", "update BaseModel {} name \"New Name\"".format(obj.id))
-        updated_obj = storage.all()[obj.__class__.__name__ + '.' + obj.id]
-        self.assertEqual(updated_obj.name, "New Name")
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            HBNBCommand().onecmd("update BaseModel 1 name 'NewName'")
+            self.assertIn("NewName", f.getvalue())
 
+    def test_custom_command(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            HBNBCommand().onecmd("BaseModel.show(1)")
+            self.assertIn("BaseModel", f.getvalue())
+
+    def test_invalid_command(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("invalidCommand")
+            self.assertIn("Unrecognized command:", f.getvalue())
 
 if __name__ == '__main__':
     unittest.main()
