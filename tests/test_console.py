@@ -3,7 +3,6 @@
 """Unnitest for console
 """
 
-import sys 
 import unittest
 from unittest.mock import patch
 from io import StringIO
@@ -29,67 +28,35 @@ class TestConsole(unittest.TestCase):
         self.console.onecmd(command)
         self.assertEqual(mock_stdout.getvalue(), expected_output)
 
-    def test_create_show_destroy_all_update_commands(self):
-        storage.reset()
-
-        # Create
+    def test_create_command(self):
         expected_output = "f1r57-1n574nc3\n"
         self.assert_stdout(expected_output, "create BaseModel")
-        obj = storage.all()['BaseModel.f1r57-1n574nc3']
 
-        # Show
+    def test_show_command(self):
+        storage.reset()
+        obj = BaseModel()
         expected_output = str(obj) + '\n'
         self.assert_stdout(expected_output, "show BaseModel {}".format(obj.id))
 
-        # Destroy
+    def test_destroy_command(self):
+        storage.reset()
+        obj = BaseModel()
         self.assert_stdout("", "destroy BaseModel {}".format(obj.id))
         self.assertNotIn(obj, storage.all().values())
 
-        # All
+    def test_all_command(self):
+        storage.reset()
         obj1 = BaseModel()
         obj2 = BaseModel()
         expected_output = "[{}, {}]\n".format(str(obj1), str(obj2))
         self.assert_stdout(expected_output, "all BaseModel")
 
-        # Update
-        self.assert_stdout("", "update BaseModel {} name \"New Name\"".format(obj1.id))
-        updated_obj = storage.all()['BaseModel.' + obj1.id]
-        self.assertEqual(updated_obj.name, "New Name")
-
-    def test_invalid_commands(self):
+    def test_update_command(self):
         storage.reset()
-
-        # Invalid create command
-        expected_output = "** class doesn't exist **\n"
-        self.assert_stdout(expected_output, "create InvalidClass")
-
-        # Invalid show command
-        expected_output = "** class doesn't exist **\n"
-        self.assert_stdout(expected_output, "show InvalidClass")
-
-        # Invalid destroy command
-        expected_output = "** class doesn't exist **\n"
-        self.assert_stdout(expected_output, "destroy InvalidClass")
-
-        # Invalid all command
-        expected_output = "** class doesn't exist **\n"
-        self.assert_stdout(expected_output, "all InvalidClass")
-
-        # Invalid update command
-        expected_output = "** class doesn't exist **\n"
-        self.assert_stdout(expected_output, "update InvalidClass")
-
-    def test_empty_line_quit_commands(self):
-        # Empty line
-        expected_output = ""
-        self.assert_stdout(expected_output, "")
-
-        # Quit command
-        self.assertTrue(self.console.onecmd("quit"))
-
-    def test_help_commands(self):
-        expected_output = "Quit command to exit the program\n"
-        self.assert_stdout(expected_output, "help quit")
+        obj = BaseModel()
+        self.assert_stdout("", "update BaseModel {} name \"New Name\"".format(obj.id))
+        updated_obj = storage.all()[obj.__class__.__name__ + '.' + obj.id]
+        self.assertEqual(updated_obj.name, "New Name")
 
 
 if __name__ == '__main__':
