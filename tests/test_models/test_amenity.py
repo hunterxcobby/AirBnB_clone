@@ -5,6 +5,7 @@ from models import Amenity
 from datetime import datetime
 import os
 
+
 class TestAmenityModel(unittest.TestCase):
     def setUp(self):
         self.amenity_model = Amenity()
@@ -35,6 +36,7 @@ class TestAmenityModel(unittest.TestCase):
         self.assertIn('created_at', amenity_dict)
         self.assertIn('updated_at', amenity_dict)
         self.assertIn('name', amenity_dict)
+
 
 if __name__ == '__main__':
     unittest.main()
