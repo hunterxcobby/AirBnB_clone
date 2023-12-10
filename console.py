@@ -49,7 +49,8 @@ class HBNBCommand(cmd.Cmd):
         print("Quit command to exit the program\n")
 
     def handle_custom_command(self, class_name, action):
-        """Handle custom commands like <class name>.all() or <class name>.count()."""
+        """Handle custom commands like <class name>.all()
+        or <class name>.count()."""
         parts = action.split("(")
         if len(parts) == 2 and parts[1].endswith(')'):
             action_name = parts[0]
@@ -65,10 +66,16 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print(f"** no instance found **")
             elif action_name == 'all':
-                instances = [str(obj) for key, obj in storage.all().items() if key.startswith(class_name + '.')]
+                instances = [
+                    str(obj) for key, obj in storage.all().items()
+                    if key.startswith(class_name + '.')
+                ]
                 print(instances)
             elif action_name == 'count':
-                count = sum(1 for key in storage.all() if key.startswith(class_name + '.'))
+                count = sum(
+                    1 for key in storage.all()
+                    if key.startswith(class_name + '.')
+                )
                 print(count)
             elif action_name == 'destroy':
                 key = "{}.{}".format(class_name, action_args[0])
@@ -83,16 +90,18 @@ class HBNBCommand(cmd.Cmd):
                     obj = storage.all()[key]
                     attribute_name = action_args[1]
                     attribute_value = action_args[2]
-                    
+
                     # Update the attribute with the given value
                     setattr(obj, attribute_name, attribute_value)
                     obj.save()
                 else:
                     print(f"** no instance found **")
             else:
-                print(f"Unrecognized action: {action_name}. Type 'help' for assistance.\n")
+                print(f"Unrecognized action: {action_name}.\
+                Type 'help' for assistance.\n")
         else:
-            print(f"Unrecognized action: {action}. Type 'help' for assistance.\n")
+            print(f"Unrecognized action: {action}.\
+            Type 'help' for assistance.\n")
 
     def default(self, line):
         """Handle unrecognized commands."""
@@ -101,7 +110,8 @@ class HBNBCommand(cmd.Cmd):
             class_name, action = parts
             self.handle_custom_command(class_name, action)
         else:
-            print(f"Unrecognized command: {line}. Type 'help' for assistance.\n")
+            print(f"Unrecognized command: {line}.\
+                  Type 'help' for assistance.\n")
 
     def do_create(self, line):
         """Creates a new instance of BaseModel, saves it (to the JSON file)"""
