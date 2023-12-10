@@ -49,5 +49,6 @@ class TestUserModel(unittest.TestCase):
         self.assertIn('first_name', user_dict)
         self.assertIn('last_name', user_dict)
 
+
 if __name__ == '__main__':
     unittest.main()
