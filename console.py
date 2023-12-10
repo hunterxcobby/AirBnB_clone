@@ -53,10 +53,13 @@ class HBNBCommand(cmd.Cmd):
         parts = action.split("(")
         if len(parts) == 2 and parts[1].endswith(')'):
             action_name = parts[0]
-            action_arg = parts[1][:-1].strip('\"')  # Remove the closing parenthesis and any surrounding quotes
+            action_args = parts[1][:-1].split(',')
+
+            # Remove surrounding quotes if present
+            action_args = [arg.strip('\"') for arg in action_args]
 
             if action_name == 'show':
-                key = "{}.{}".format(class_name, action_arg)
+                key = "{}.{}".format(class_name, action_args[0])
                 if key in storage.all():
                     print(storage.all()[key])
                 else:
@@ -67,11 +70,29 @@ class HBNBCommand(cmd.Cmd):
             elif action_name == 'count':
                 count = sum(1 for key in storage.all() if key.startswith(class_name + '.'))
                 print(count)
+            elif action_name == 'destroy':
+                key = "{}.{}".format(class_name, action_args[0])
+                if key in storage.all():
+                    del storage.all()[key]
+                    storage.save()
+                else:
+                    print(f"** no instance found **")
+            elif action_name == 'update':
+                key = "{}.{}".format(class_name, action_args[0])
+                if key in storage.all():
+                    obj = storage.all()[key]
+                    attribute_name = action_args[1]
+                    attribute_value = action_args[2]
+                    
+                    # Update the attribute with the given value
+                    setattr(obj, attribute_name, attribute_value)
+                    obj.save()
+                else:
+                    print(f"** no instance found **")
             else:
                 print(f"Unrecognized action: {action_name}. Type 'help' for assistance.\n")
         else:
             print(f"Unrecognized action: {action}. Type 'help' for assistance.\n")
-
 
     def default(self, line):
         """Handle unrecognized commands."""
