@@ -5,6 +5,7 @@ from models import Place
 from datetime import datetime
 import os
 
+
 class TestPlaceModel(unittest.TestCase):
     def setUp(self):
         self.place_model = Place()
@@ -65,6 +66,7 @@ class TestPlaceModel(unittest.TestCase):
         self.assertIn('latitude', place_dict)
         self.assertIn('longitude', place_dict)
         self.assertIn('amenity_ids', place_dict)
+
 
 if __name__ == '__main__':
     unittest.main()
