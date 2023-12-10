@@ -5,6 +5,7 @@ from models import Review
 from datetime import datetime
 import os
 
+
 class TestReviewModel(unittest.TestCase):
     def setUp(self):
         self.review_model = Review()
@@ -41,6 +42,7 @@ class TestReviewModel(unittest.TestCase):
         self.assertIn('place_id', review_dict)
         self.assertIn('user_id', review_dict)
         self.assertIn('text', review_dict)
+
 
 if __name__ == '__main__':
     unittest.main()
