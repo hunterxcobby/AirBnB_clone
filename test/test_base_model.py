@@ -32,3 +32,6 @@ class TestBaseModel(unittest.TestCase):
         # uuids are string
         self.assertTrue(is_string(obj1.id))
         self.assertTrue(is_string(obj2.id))
+
+        # differenct uuids
+        self.assertNotEqual(obj1, obj2)
