@@ -11,6 +11,7 @@ from models.place import Place
 from models.review import Review
 import os
 
+
 class TestFileStorage(unittest.TestCase):
     def setUp(self):
         self.file_storage = FileStorage()
@@ -32,7 +33,10 @@ class TestFileStorage(unittest.TestCase):
         self.file_storage.new(new_object)
         key = "{}.{}".format(new_object.__class__.__name__, new_object.id)
         self.assertIn(key, self.file_storage._FileStorage__objects)
-        self.assertEqual(self.file_storage._FileStorage__objects[key], new_object)
+        self.assertEqual(
+            self.file_storage._FileStorage__objects[key],
+            new_object
+        )
 
     def test_save_and_reload_methods(self):
         # Create and save objects
@@ -61,9 +65,19 @@ class TestFileStorage(unittest.TestCase):
         self.assertIn(key1, self.file_storage._FileStorage__objects)
         self.assertIn(key2, self.file_storage._FileStorage__objects)
         self.assertIn(key3, self.file_storage._FileStorage__objects)
-        self.assertEqual(self.file_storage._FileStorage__objects[key1].to_dict(), obj1.to_dict())
-        self.assertEqual(self.file_storage._FileStorage__objects[key2].to_dict(), obj2.to_dict())
-        self.assertEqual(self.file_storage._FileStorage__objects[key3].to_dict(), obj3.to_dict())
+        self.assertEqual(
+            self.file_storage._FileStorage__objects[key1].to_dict(),
+            obj1.to_dict()
+        )
+        self.assertEqual(
+            self.file_storage._FileStorage__objects[key2].to_dict(),
+            obj2.to_dict()
+        )
+        self.assertEqual(
+            self.file_storage._FileStorage__objects[key3].to_dict(),
+            obj3.to_dict()
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
