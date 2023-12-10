@@ -4,6 +4,10 @@
 This module is a test file used to test the BaseModel class of our AirBnB_clone project
 '''
 
+
+# python's path
+
+sys.path
 # modules that will be used here
 
 import unittest
