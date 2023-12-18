@@ -1,41 +1,48 @@
 #!/usr/bin/python3
 
-'''
-This module is a test file used to test the BaseModel class of our AirBnB_clone project
-'''
-
-
-# python's path
-
-sys.path
-# modules that will be used here
+"""
+Unittest for BaseModel class
+"""
 
 import unittest
 from models.base_model import BaseModel
+from datetime import datetime
+import os
 
-# helper functions
-
-def is_string(value):
-    ''' return true if value is string '''
-    return isintance(value)
-
-# Test Cases
 
 class TestBaseModel(unittest.TestCase):
-    '''
-    This is a test case that is testing all cases in the BaseModel class of our project
-    '''
+    def setUp(self):
+        self.base_model = BaseModel()
 
-    # testing uuid of every instance
+    def tearDown(self):
+        del self.base_model
 
-    def test_uuid(self):
-        ''' uuids must be equal no matter what '''
-        obj1 = BaseModel()
-        obj2 = BaseModel()
+    def test_instance_creation(self):
+        self.assertIsInstance(self.base_model, BaseModel)
+        self.assertTrue(hasattr(self.base_model, 'id'))
+        self.assertTrue(hasattr(self.base_model, 'created_at'))
+        self.assertTrue(hasattr(self.base_model, 'updated_at'))
 
-        # uuids are string
-        self.assertTrue(is_string(obj1.id))
-        self.assertTrue(is_string(obj2.id))
+    def test_string_representation(self):
+        string_repr = str(self.base_model)
+        self.assertIn("[BaseModel]", string_repr)
+        self.assertIn("id", string_repr)
+        self.assertIn("created_at", string_repr)
+        self.assertIn("updated_at", string_repr)
 
-        # differenct uuids
-        self.assertNotEqual(obj1, obj2)
+    def test_save_method(self):
+        initial_updated_at = self.base_model.updated_at
+        self.base_model.save()
+        self.assertNotEqual(initial_updated_at, self.base_model.updated_at)
+
+    def test_to_dict_method(self):
+        model_dict = self.base_model.to_dict()
+        self.assertIsInstance(model_dict, dict)
+        self.assertEqual(model_dict['__class__'], 'BaseModel')
+        self.assertIn('id', model_dict)
+        self.assertIn('created_at', model_dict)
+        self.assertIn('updated_at', model_dict)
+
+
+if __name__ == '__main__':
+    unittest.main()
